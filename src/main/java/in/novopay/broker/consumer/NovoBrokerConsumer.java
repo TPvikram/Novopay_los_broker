@@ -4,11 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import in.novopay.broker.binding.NovoBrokerListenerBinding;
 import in.novopay.broker.common.constants.CommonConstants;
 import in.novopay.broker.common.model.ActionForm;
-import in.novopay.broker.common.request.AdditionalDetails;
-import in.novopay.broker.common.request.BusinessDetails;
-import in.novopay.broker.common.request.CreateLoanApplRequest;
-import in.novopay.broker.common.request.PersonalDetails;
+import in.novopay.broker.common.request.*;
 import in.novopay.broker.lendingkart.handler.LoanApplicationHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 
@@ -19,6 +17,7 @@ import java.util.Map;
 @EnableBinding(NovoBrokerListenerBinding.class)
 public class NovoBrokerConsumer {
 
+    @Autowired
     LoanApplicationHandler loanApplicationHandler;
 
     @StreamListener(target = NovoBrokerListenerBinding.CHANNEL)
@@ -45,10 +44,10 @@ public class NovoBrokerConsumer {
                     new TypeReference<AdditionalDetails>() {});
             createLoanApplRequest.setAdditionalDetails(additionalDetails);
 
-           /* createLoanApplRequest.setCibilConsentForLK(
-                    Boolean.valueOf(formValues.get("cibilconsentForLK").toString()));
-            createLoanApplRequest.setMobileNoVerified(
-                    Boolean.valueOf(formValues.get("mobileNoVerified").toString()));*/
+            Consent consent= mapper.convertValue(formValues.get("consent"),
+                    new TypeReference<Consent>() {});
+            createLoanApplRequest.setConsent(consent);
+
             loanApplicationHandler.createApplication(createLoanApplRequest);
         }
 

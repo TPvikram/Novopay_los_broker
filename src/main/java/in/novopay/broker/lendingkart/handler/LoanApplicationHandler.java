@@ -16,18 +16,23 @@ public class LoanApplicationHandler {
 
     private static final Logger LOGGER = Logger.getLogger(LoanApplicationHandler.class.getName());
 
-    public LendingKartRequest createApplication(CreateLoanApplRequest loanApplRequest) {
-        LendingKartRequest lkLoanApplRequest = null;
+    public LendingKartRequest createApplication(CreateLoanApplRequest createLoanApplRequest) {
+        LendingKartRequest lendingKartRequest = null;
 
-        if (loanApplRequest !=null) {
-            LOGGER.info("Convert the REST Model to MongoDB Document");
-            lkLoanApplRequest = CreateLoanApplicationMapper.MAPPER.fromCreateLoanAppRequest(loanApplRequest);
+        if (createLoanApplRequest !=null) {
+            LOGGER.info("Mapping Loan Application Request to LendingKart Request");
+            System.out.println(createLoanApplRequest.toString());
+         //   lendingKartRequest = CreateLoanApplicationMapper.MAPPER.fromCreateLoanAppRequest(createLoanApplRequest);
+            lendingKartRequest=CreateLoanApplicationMapper.MAPPER.fromCreateLoanAppRequest(createLoanApplRequest.getPersonalDetails(),
+                    createLoanApplRequest.getBusinessDetails(),
+                    createLoanApplRequest.getAdditionalDetails());
+            System.out.println(lendingKartRequest.toString());
         }
 
         // Call the createApplication API in LendingKart
-        System.out.println(lkLoanApplRequest.toString());
-        createApplicationClient.invokeRestCall(lkLoanApplRequest);
-        return lkLoanApplRequest;
+
+//        createApplicationClient.invokeRestCall(lkLoanApplRequest);
+        return lendingKartRequest;
     }
 
 }

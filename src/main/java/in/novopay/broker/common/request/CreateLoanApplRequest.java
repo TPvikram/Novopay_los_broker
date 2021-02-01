@@ -13,8 +13,7 @@ import lombok.NoArgsConstructor;
 public class CreateLoanApplRequest {
 
     PersonalDetails personalDetails;
-    boolean cibilConsentForLK;
-    boolean mobileNoVerified;
+    Consent consent;
     BusinessDetails businessDetails;
     AdditionalDetails additionalDetails;
 

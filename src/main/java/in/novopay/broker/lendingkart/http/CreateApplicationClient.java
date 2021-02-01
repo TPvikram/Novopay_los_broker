@@ -13,7 +13,7 @@ import static in.novopay.broker.lendingkart.constants.NovoBrokerConstants.BASEUR
 public class CreateApplicationClient {
 
     private RestTemplate restTemplate;
-
+/*
     public ResponseEntity<ResponseBody> invokeRestCall(@RequestBody LendingKartRequest lendingKartRequest) {
         HttpHeaders headers = new HttpHeaders();
 
@@ -27,5 +27,5 @@ public class CreateApplicationClient {
 
         //getHttpConnection().connect();
         return responseBody;
-    }
+    }*/
 }

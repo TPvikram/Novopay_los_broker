@@ -15,10 +15,6 @@ public class PersonalDetails {
     String companyName;
     long businessRevenue;
     String personalDob;
-   /* String ownership;
-    String address;
-    String city;
-    String state;*/
-    String pincode;
     String gender;
+    String pincode;
 }

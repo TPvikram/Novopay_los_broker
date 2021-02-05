@@ -10,24 +10,24 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class LendingKartRequest {
 
-    String firstName; //
-    String lastName; //
-    String email; //
-    String mobile; //
-    long businessRevenue; //
-    int businessAge; ///
-    String registeredAs; ///
-    String personalDob; //
-    String personalPAN; ////
-    String gender; //
+    String firstName;
+    String lastName;
+    String email;
+    String mobile;
+    long businessRevenue;
+    int businessAge;
+    String registeredAs;
+    String personalDob;
+    String personalPAN;
+    String gender;
     boolean cibilConsentForLK;
     boolean mobileNoVerified;
     PersonalAddress personalAddress;
     String businessRunBy;
-    long loanAmount; ////
-    String typeOfLoan;
-    String companyName; //
+    long loanAmount;
+  //  String typeOfLoan;
+    String companyName;
     BusinessAddress businessAddress;
-    String loanNeedTime;
+ //  String loanNeedTime;
     String uniqueId;
 }

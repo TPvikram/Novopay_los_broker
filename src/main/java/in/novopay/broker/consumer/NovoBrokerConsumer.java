@@ -1,4 +1,6 @@
 package in.novopay.broker.consumer;
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.novopay.broker.binding.NovoBrokerListenerBinding;
@@ -6,10 +8,12 @@ import in.novopay.broker.common.constants.CommonConstants;
 import in.novopay.broker.common.model.ActionForm;
 import in.novopay.broker.common.request.*;
 import in.novopay.broker.lendingkart.handler.LoanApplicationHandler;
+import in.novopay.broker.lendingkart.request.LendingKartRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,11 +23,12 @@ public class NovoBrokerConsumer {
 
     @Autowired
     LoanApplicationHandler loanApplicationHandler;
+    private JsonGenerator jsonGenerator = null;
+    private ObjectMapper objectMapping = null;
 
     @StreamListener(target = NovoBrokerListenerBinding.CHANNEL)
     public void getActionForm(ActionForm actionForm) {
-      //System.out.println(actionForm.toString());
-
+        System.out.println(actionForm);
         String formAction = actionForm.getFormAction();
         HashMap<String, Object> formValues = actionForm.getValues();
 
@@ -32,7 +37,7 @@ public class NovoBrokerConsumer {
 
             ObjectMapper mapper = new ObjectMapper();
 
-           PersonalDetails personalDetails = mapper.convertValue(formValues.get("personal_details"),
+            PersonalDetails personalDetails = mapper.convertValue(formValues.get("personal_details"),
                     new TypeReference<PersonalDetails>() {});
             createLoanApplRequest.setPersonalDetails(personalDetails);
 
@@ -44,15 +49,40 @@ public class NovoBrokerConsumer {
                     new TypeReference<AdditionalDetails>() {});
             createLoanApplRequest.setAdditionalDetails(additionalDetails);
 
-            Consent consent= mapper.convertValue(formValues.get("consent"),
+
+           Consent consent= mapper.convertValue(formValues.get("consent"),
                     new TypeReference<Consent>() {});
             createLoanApplRequest.setConsent(consent);
+/*
 
-            loanApplicationHandler.createApplication(createLoanApplRequest);
+            PersonalAddress personalAddress = mapper.convertValue(formValues.get("personalAddress"),
+                    new TypeReference<PersonalAddress>() {
+                    });createLoanApplRequest.setPersonalAddress(personalAddress);
+            BusinessAddress businessAddress = mapper.convertValue(formValues.get("businessAddress"),
+                    new TypeReference<BusinessAddress>() {
+                    });
+            createLoanApplRequest.setBusinessAddress(businessAddress);
+            System.out.println(createLoanApplRequest);
+*/
+
+
+            LendingKartRequest lendingKartRequest= loanApplicationHandler.createApplication(createLoanApplRequest);
+            System.out.println(lendingKartRequest);
+
+            objectMapping = new ObjectMapper();
+            try{
+                jsonGenerator = objectMapping.getJsonFactory().createJsonGenerator(System.out, JsonEncoding.UTF8);
+                jsonGenerator.writeObject(lendingKartRequest);
+                objectMapping.writeValue(System.out, lendingKartRequest);
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+/*            jsonGenerator.flush();
+            jsonGenerator.close();*/
+        }
+
         }
 
 
 
     }
-
-}

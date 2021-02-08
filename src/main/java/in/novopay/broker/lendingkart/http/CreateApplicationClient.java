@@ -1,31 +1,52 @@
 package in.novopay.broker.lendingkart.http;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import in.novopay.broker.lendingkart.request.LendingKartRequest;
+import in.novopay.broker.lendingkart.response.NovoCodeResponse;
 import in.novopay.broker.lendingkart.response.ResponseBody;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
-import static in.novopay.broker.lendingkart.constants.NovoBrokerConstants.BASEURL;
+
 
 @Component
 public class CreateApplicationClient {
 
+    @Autowired
     private RestTemplate restTemplate;
-/*
-    public ResponseEntity<ResponseBody> invokeRestCall(@RequestBody LendingKartRequest lendingKartRequest) {
-        HttpHeaders headers = new HttpHeaders();
+    private ResponseEntity<ResponseBody> responseEntity;
+    private  ResponseBody responseBody;
 
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+    ClientHttpRequestFactory requestFactory = new
+            HttpComponentsClientHttpRequestFactory(HttpClients.createDefault());
 
-        HttpEntity<LendingKartRequest> entity = new HttpEntity<LendingKartRequest>(lendingKartRequest,headers);
+    public ResponseBody createLkApp(@RequestBody LendingKartRequest lendingKartRequest) {
 
-        ResponseEntity<ResponseBody> responseBody = restTemplate.exchange(BASEURL+"/v2/partner/leads/create-application",
-                HttpMethod.POST,
-                entity,ResponseBody.class);
+        NovoCodeResponse novoCodeResponse = NovoCodeResponse.builder().build();
 
-        //getHttpConnection().connect();
-        return responseBody;
-    }*/
+        if (lendingKartRequest != null) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            HttpEntity<LendingKartRequest> entity = new HttpEntity<LendingKartRequest>(lendingKartRequest, headers);
+            responseEntity = restTemplate.exchange("http://localhost:8081/lendingKart/createApplication",
+                    HttpMethod.POST,
+                    entity, ResponseBody.class);
+            if (responseEntity.getStatusCode() != HttpStatus.OK) {
+                throw new IllegalStateException(String.format("Unable to create Application, received status", responseEntity.getStatusCode()));
+                //getHttpConnection().connect();
+            }
+
+            ObjectMapper responseMapper = new ObjectMapper();
+            responseBody = responseMapper.convertValue(responseEntity.getBody(),
+                    new TypeReference<ResponseBody>() {
+                    });
+        }
+      return responseBody;
+    }
 }

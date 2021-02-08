@@ -9,9 +9,11 @@ import in.novopay.broker.common.model.ActionForm;
 import in.novopay.broker.common.request.*;
 import in.novopay.broker.lendingkart.handler.LoanApplicationHandler;
 import in.novopay.broker.lendingkart.request.LendingKartRequest;
+import in.novopay.broker.lendingkart.response.ResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.context.annotation.Bean;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -27,7 +29,7 @@ public class NovoBrokerConsumer {
     private ObjectMapper objectMapping = null;
 
     @StreamListener(target = NovoBrokerListenerBinding.CHANNEL)
-    public void getActionForm(ActionForm actionForm) {
+    public void getActionForm(ActionForm actionForm) throws IOException {
         System.out.println(actionForm);
         String formAction = actionForm.getFormAction();
         HashMap<String, Object> formValues = actionForm.getValues();
@@ -38,51 +40,39 @@ public class NovoBrokerConsumer {
             ObjectMapper mapper = new ObjectMapper();
 
             PersonalDetails personalDetails = mapper.convertValue(formValues.get("personal_details"),
-                    new TypeReference<PersonalDetails>() {});
+                    new TypeReference<PersonalDetails>() {
+                    });
             createLoanApplRequest.setPersonalDetails(personalDetails);
 
             BusinessDetails businessDetails = mapper.convertValue(formValues.get("business_details"),
-                    new TypeReference<BusinessDetails>() {});
+                    new TypeReference<BusinessDetails>() {
+                    });
             createLoanApplRequest.setBusinessDetails(businessDetails);
 
             AdditionalDetails additionalDetails = mapper.convertValue(formValues.get("additional_details"),
-                    new TypeReference<AdditionalDetails>() {});
+                    new TypeReference<AdditionalDetails>() {
+                    });
             createLoanApplRequest.setAdditionalDetails(additionalDetails);
 
 
-           Consent consent= mapper.convertValue(formValues.get("consent"),
-                    new TypeReference<Consent>() {});
-            createLoanApplRequest.setConsent(consent);
-/*
-
-            PersonalAddress personalAddress = mapper.convertValue(formValues.get("personalAddress"),
-                    new TypeReference<PersonalAddress>() {
-                    });createLoanApplRequest.setPersonalAddress(personalAddress);
-            BusinessAddress businessAddress = mapper.convertValue(formValues.get("businessAddress"),
-                    new TypeReference<BusinessAddress>() {
+            Consent consent = mapper.convertValue(formValues.get("consent"),
+                    new TypeReference<Consent>() {
                     });
-            createLoanApplRequest.setBusinessAddress(businessAddress);
-            System.out.println(createLoanApplRequest);
-*/
+            createLoanApplRequest.setConsent(consent);
 
 
-            LendingKartRequest lendingKartRequest= loanApplicationHandler.createApplication(createLoanApplRequest);
-            System.out.println(lendingKartRequest);
 
-            objectMapping = new ObjectMapper();
-            try{
-                jsonGenerator = objectMapping.getJsonFactory().createJsonGenerator(System.out, JsonEncoding.UTF8);
-                jsonGenerator.writeObject(lendingKartRequest);
-                objectMapping.writeValue(System.out, lendingKartRequest);
-            }catch (IOException e) {
-                e.printStackTrace();
+           ResponseBody responseBody = loanApplicationHandler.createApplication(createLoanApplRequest);
+            System.out.println(responseBody);
+            if (responseBody.getApplicationId() != null){
+
+                //TODO Upload file Api to be called
             }
-/*            jsonGenerator.flush();
-            jsonGenerator.close();*/
-        }
+
 
         }
-
 
 
     }
+
+}

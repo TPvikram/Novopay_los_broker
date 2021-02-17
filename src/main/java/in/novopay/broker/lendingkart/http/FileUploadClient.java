@@ -2,6 +2,7 @@ package in.novopay.broker.lendingkart.http;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
+import static in.novopay.broker.lendingkart.constants.NovoBrokerConstants.BASEURL;
 
 
 public class FileUploadClient {

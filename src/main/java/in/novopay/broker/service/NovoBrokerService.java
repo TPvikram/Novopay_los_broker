@@ -23,7 +23,7 @@ public class NovoBrokerService {
     private static final Logger LOGGER = Logger.getLogger(NovoBrokerService.class.getName());
 
     public String createLoanApplication(CreateLoanApplRequest createLoanApplRequest) {
-       LendingKartRequest lendingKartRequest = loanApplicationHandler.createApplication(createLoanApplRequest);
+      // LendingKartRequest lendingKartRequest = loanApplicationHandler.createApplication(createLoanApplRequest);
      //  createApplicationClient.invokeRestCall(lkApplicationRequest);
 
 

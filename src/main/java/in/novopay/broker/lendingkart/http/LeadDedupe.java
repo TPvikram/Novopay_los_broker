@@ -3,7 +3,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.novopay.broker.lendingkart.request.ExistingCustomer;
 import in.novopay.broker.lendingkart.response.LeadExistsResponse;
-import in.novopay.broker.lendingkart.response.ResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -19,7 +18,6 @@ public class LeadDedupe {
 
     @Autowired
     private RestTemplate restTemplate;
-    private ResponseEntity<LeadExistsResponse> responseEntity;
     private LeadExistsResponse leadExistsResponse;
 
     public LeadExistsResponse customerExisting(ExistingCustomer existingCustomer){
@@ -31,7 +29,7 @@ public class LeadDedupe {
         headers.set("X-Api-Key", CREATE_APP_API_KEY);
 
         HttpEntity<ExistingCustomer> entity = new HttpEntity<ExistingCustomer>(existingCustomer, headers);
-         responseEntity = restTemplate.exchange(BASE_URL+"/lead-exists-status",
+        ResponseEntity<LeadExistsResponse> responseEntity = restTemplate.exchange(BASE_URL + "/lead-exists-status",
                 HttpMethod.POST,
                 entity, LeadExistsResponse.class);
 
@@ -42,8 +40,6 @@ public class LeadDedupe {
         leadExists = responseMapper.convertValue(responseEntity.getBody(),
                 new TypeReference<LeadExistsResponse>() {
                 });
-
-        System.out.println(leadExists);
 
 
         return leadExists;

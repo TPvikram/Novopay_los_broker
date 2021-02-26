@@ -2,15 +2,15 @@ package in.novopay.broker.common.model;
 
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.HashMap;
 
 
-@Getter
-@Setter
-@ToString
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
 public class ActionForm {
 
     // Form Id

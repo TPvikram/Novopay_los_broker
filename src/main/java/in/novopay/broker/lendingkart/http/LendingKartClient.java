@@ -1,10 +1,10 @@
 package in.novopay.broker.lendingkart.http;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.novopay.broker.lendingkart.request.LendingKartRequest;
-import in.novopay.broker.lendingkart.response.LendingKartResponse;
 import in.novopay.broker.lendingkart.response.CreateLoanApplResponse;
-
+import in.novopay.broker.lendingkart.response.LendingKartResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -18,15 +18,18 @@ import static in.novopay.broker.common.constants.CommonConstants.CREATE_APP_API_
 
 
 @Component
-public class CreateApplicationClient extends LendingKartClient {
+public class LendingKartClient {
 
     @Autowired
     private RestTemplate restTemplate;
     private ResponseEntity<CreateLoanApplResponse> responseEntity;
 
+
     private CreateLoanApplResponse createLoanApplResponse;
 
-    public CreateLoanApplResponse createLoanApplication(@RequestBody LendingKartRequest lendingKartRequest) {
+
+
+    public CreateLoanApplResponse createLkApp(@RequestBody LendingKartRequest lendingKartRequest) {
 
         LendingKartResponse lendingKartResponse = LendingKartResponse.builder().build();
         HttpHeaders headers = new HttpHeaders();
@@ -41,7 +44,7 @@ public class CreateApplicationClient extends LendingKartClient {
                 entity, CreateLoanApplResponse.class);
         if (responseEntity.getStatusCode() != HttpStatus.OK) {
             throw new IllegalStateException(String.format("Unable to create Application, received status", responseEntity.getStatusCode()));
-            //getHttpConnection().connect();
+
         }
 
         ObjectMapper responseMapper = new ObjectMapper();

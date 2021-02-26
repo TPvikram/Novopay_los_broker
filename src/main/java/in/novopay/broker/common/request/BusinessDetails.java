@@ -14,7 +14,7 @@ public class BusinessDetails {
     String businessAge;
     String age;
     String registeredAs;
-  String ownership;
+    String ownership;
     String city;
     String state;
     String companyGstNumber;

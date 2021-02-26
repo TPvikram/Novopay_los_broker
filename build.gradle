@@ -11,7 +11,7 @@ springBoot {
 	buildInfo {
 		properties {
 			group = "in.novopay"
-			name = "novo-code-app"
+			name = "novo-broker"
 			version = "1.0"
 		}
 	}
@@ -24,7 +24,7 @@ configurations {
 }
 
 bootJar {
-	baseName 'novo-code-docker'
+	baseName 'novo-broker'
 	version '0.1.2'
 }
 

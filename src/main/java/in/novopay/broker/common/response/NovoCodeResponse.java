@@ -1,4 +1,4 @@
-package in.novopay.broker.response;
+package in.novopay.broker.common.response;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
